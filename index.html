@@ -35,30 +35,55 @@
       transition: all 0.3s ease;
     }
 
-    .theme-icons {
+    .theme-button {
       position: absolute;
       top: 1rem;
       right: 3rem;
+    }
+
+    .theme-button button {
+      padding: 0.5rem 1rem;
+      background-color: transparent;
+      color: var(--text-color);
+      border: 1px solid var(--text-color);
+      border-radius: 5px;
       cursor: pointer;
     }
 
-    .theme-icons img {
-      width: 24px;
-      height: 24px;
-      margin-left: 10px;
-      vertical-align: middle;
+    .light-theme .theme-button button {
+      color: #1e293b;
+      border-color: #1e293b;
     }
 
-    .sun-icon {
+    .theme-options {
       display: none;
+      position: absolute;
+      right: 3rem;
+      top: 3.2rem;
+      background-color: var(--card-bg);
+      border: 1px solid var(--text-color);
+      border-radius: 5px;
+      z-index: 1000;
     }
 
-    .light-theme .moon-icon {
-      display: none;
+    .theme-options div {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      color: var(--text-color);
     }
 
-    .light-theme .sun-icon {
-      display: inline;
+    .theme-options div:hover {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .light-theme .theme-options {
+      border-color: #1e293b;
+      background-color: #ffffff;
+    }
+
+    .light-theme .theme-options div {
+      color: #1e293b;
     }
 
     .signin-btn {
@@ -139,16 +164,42 @@
       border-radius: 8px;
     }
 
-    .contact-btn {
-      display: block;
+    .contact-btn, .email-btn, .instagram-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: max-content;
-      margin: 2rem auto;
-      background-color: var(--accent);
-      color: white;
+      margin: 1rem auto;
       padding: 0.8rem 1.5rem;
       border-radius: 30px;
-      text-decoration: none;
       font-size: 1.1rem;
+      text-decoration: none;
+      color: white;
+      transition: 0.3s;
+    }
+
+    .contact-btn {
+      background-color: var(--accent);
+    }
+
+    .instagram-btn {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    }
+
+    .email-btn {
+      background-color: #db4437; /* Gmail red */
+    }
+
+    .contact-btn:hover, .instagram-btn:hover, .email-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    .contact-btn img, .instagram-btn img, .email-btn img {
+      margin-right: 10px;
+      width: 20px;
+      height: 20px;
+      filter: brightness(0) invert(1);
     }
 
     footer {
@@ -205,10 +256,14 @@
   </style>
 </head>
 <body>
-  <div class="theme-icons" onclick="toggleTheme()">
-    <img src="https://img.icons8.com/ios-filled/24/ffffff/moon-symbol.png" alt="Moon" class="moon-icon">
-    <img src="https://img.icons8.com/ios-filled/24/000000/sun--v1.png" alt="Sun" class="sun-icon">
+  <div class="theme-button">
+    <button onclick="toggleDropdown()">Theme</button>
+    <div class="theme-options" id="themeOptions">
+      <div onclick="setTheme('light')">Light</div>
+      <div onclick="setTheme('dark')">Dark</div>
+    </div>
   </div>
+
   <button class="signin-btn" onclick="openModal()">Sign In</button>
 
   <header>
@@ -226,6 +281,7 @@
     <ul>
       <li>HTML</li>
       <li>CSS</li>
+      <li>AI-Powered Web Development</li>
     </ul>
   </section>
 
@@ -238,7 +294,21 @@
     </div>
   </section>
 
-  <a href="https://wa.me/923000000000" class="contact-btn" target="_blank">Contact Me on WhatsApp</a>
+  <!-- Contact Buttons -->
+  <a href="https://wa.me/923000000000" class="contact-btn" target="_blank">
+    <img src="https://img.icons8.com/ios-filled/24/ffffff/whatsapp--v1.png" alt="WhatsApp" />
+    Contact Me on WhatsApp
+  </a>
+
+  <a href="https://www.instagram.com/yourusername" class="instagram-btn" target="_blank">
+    <img src="https://img.icons8.com/ios-filled/24/ffffff/instagram-new--v1.png" alt="Instagram" />
+    Contact Me on Instagram
+  </a>
+
+  <a href="mailto:arpglobal5@gmail.com" class="email-btn" target="_blank">
+    <img src="https://img.icons8.com/ios-filled/24/ffffff/gmail.png" alt="Email" />
+    Contact Me via Email
+  </a>
 
   <footer>
     &copy; 2025 ARP Website Developer. All rights reserved.
@@ -256,8 +326,18 @@
   </div>
 
   <script>
-    function toggleTheme() {
-      document.body.classList.toggle('light-theme');
+    function toggleDropdown() {
+      const options = document.getElementById('themeOptions');
+      options.style.display = options.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function setTheme(value) {
+      if (value === "light") {
+        document.body.classList.add('light-theme');
+      } else {
+        document.body.classList.remove('light-theme');
+      }
+      document.getElementById('themeOptions').style.display = 'none';
     }
 
     function openModal() {
@@ -270,8 +350,12 @@
 
     window.onclick = function(event) {
       const modal = document.getElementById('signinModal');
+      const themeBox = document.getElementById('themeOptions');
       if (event.target == modal) {
         closeModal();
+      }
+      if (!event.target.closest('.theme-button')) {
+        themeBox.style.display = 'none';
       }
     }
 
