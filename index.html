@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ARP Website Developer</title>
+  <meta name="keywords" content=" arp, website developer, Abdul Rehman, Web Developer Karachi, HTML CSS expert, arpglobal5">
   <style>
     :root {
       --bg-color: #0f172a;
       --text-color: #e2e8f0;
       --card-bg: #1e293b;
       --accent: #0f766e;
-      --skill-bg: #334155;
       --footer-bg: #0f172a;
       --secondary-text: #cbd5e1;
       --logo-filter: invert(1);
@@ -21,7 +21,6 @@
       --text-color: #1e293b;
       --card-bg: #ffffff;
       --accent: #0f766e;
-      --skill-bg: #e2e8f0;
       --footer-bg: #e2e8f0;
       --secondary-text: #475569;
       --logo-filter: invert(0);
@@ -130,41 +129,69 @@
       color: var(--secondary-text);
     }
 
-    section {
+    /* Choose Website Section */
+    .choose-website {
       padding: 2rem;
-    }
-
-    .skills ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .skills li {
-      background-color: var(--skill-bg);
-      padding: 0.5rem 1rem;
-      margin: 0.3rem 0;
-      border-radius: 8px;
-      display: inline-block;
-      margin-right: 0.5rem;
-      color: var(--text-color);
-    }
-
-    .project-card {
-      background-color: var(--card-bg);
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      max-width: 600px;
-      margin: 0 auto;
       text-align: center;
     }
 
-    .project-card img {
-      max-width: 100%;
-      border-radius: 8px;
+    .choose-website h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
     }
 
-    .contact-btn, .email-btn, .instagram-btn {
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 1rem;
+      border-radius: 15px;
+      width: 300px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      color: var(--text-color);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      margin-top: 0.5rem;
+      font-size: 1.3rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: var(--secondary-text);
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1.2rem;
+      background-color: var(--accent);
+      color: white;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .contact-btn, .instagram-btn {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -186,16 +213,12 @@
       background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
     }
 
-    .email-btn {
-      background-color: #db4437; /* Gmail red */
-    }
-
-    .contact-btn:hover, .instagram-btn:hover, .email-btn:hover {
+    .contact-btn:hover, .instagram-btn:hover {
       transform: scale(1.05);
       opacity: 0.9;
     }
 
-    .contact-btn img, .instagram-btn img, .email-btn img {
+    .contact-btn img, .instagram-btn img {
       margin-right: 10px;
       width: 20px;
       height: 20px;
@@ -214,10 +237,26 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0, 0, 0, 0.8);
       justify-content: center;
       align-items: center;
-      z-index: 999;
+      z-index: 9999;
+    }
+
+    .modal iframe {
+      width: 90%;
+      height: 90%;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .modal .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 2rem;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
     }
 
     .modal-content {
@@ -245,14 +284,6 @@
       border-radius: 5px;
       cursor: pointer;
     }
-
-    .close-btn {
-      position: absolute;
-      top: 0.5rem;
-      right: 1rem;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
@@ -264,7 +295,7 @@
     </div>
   </div>
 
-  <button class="signin-btn" onclick="openModal()">Sign In</button>
+  <button class="signin-btn" onclick="openLogin()">Sign In</button>
 
   <header>
     <a href="index.html">
@@ -276,21 +307,28 @@
     </div>
   </header>
 
-  <section class="skills">
-    <h2>Skills</h2>
-    <ul>
-      <li>HTML</li>
-      <li>CSS</li>
-      <li>AI-Powered Web Development</li>
-    </ul>
-  </section>
-
-  <section class="projects">
-    <h2>My Work</h2>
-    <div class="project-card">
-      <h3>Demo Website</h3>
-      <img src="https://via.placeholder.com/600x300.png?text=Demo+Project" alt="Project Screenshot">
-      <p>This is a sample of my work. I design simple and responsive web pages.</p>
+  <!-- CHOOSE WEBSITE -->
+  <section class="choose-website">
+    <h2>🖥️ Choose Your Website</h2>
+    <div class="card-container">
+      <div class="card">
+        <img src="https://via.placeholder.com/300x160?text=Portfolio+Preview" alt="Portfolio">
+        <h3>Portfolio Website</h3>
+        <p>Perfect for showcasing your work, skills, and resume.</p>
+        <a onclick="openPreview('demo/portfolio.html')">Preview</a>
+      </div>
+      <div class="card">
+        <img src="https://via.placeholder.com/300x160?text=Business+Website" alt="Business">
+        <h3>Business Website</h3>
+        <p>Ideal for companies and service-based businesses.</p>
+        <a onclick="openPreview('demo/business.html')">Preview</a>
+      </div>
+      <div class="card">
+        <img src="https://via.placeholder.com/300x160?text=Online+Store" alt="Store">
+        <h3>Online Store</h3>
+        <p>Sell your products with a beautiful ecommerce layout.</p>
+        <a onclick="openPreview('demo/store.html')">Preview</a>
+      </div>
     </div>
   </section>
 
@@ -300,24 +338,37 @@
     Contact Me on WhatsApp
   </a>
 
-  <a href="https://www.instagram.com/yourusername" class="instagram-btn" target="_blank">
+  <a href="https://www.instagram.com/arpglobal5" class="instagram-btn" target="_blank">
     <img src="https://img.icons8.com/ios-filled/24/ffffff/instagram-new--v1.png" alt="Instagram" />
     Contact Me on Instagram
   </a>
 
-  <a href="mailto:arpglobal5@gmail.com" class="email-btn" target="_blank">
-    <img src="https://img.icons8.com/ios-filled/24/ffffff/gmail.png" alt="Email" />
-    Contact Me via Email
-  </a>
+  <!-- Email Copy -->
+  <div style="text-align: center; margin: 2rem;">
+    <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">📧 Email Me at:</p>
+    <div style="display: inline-flex; align-items: center; gap: 0.5rem; background-color: var(--card-bg); color: var(--text-color); padding: 0.5rem 1rem; border-radius: 30px;">
+      <span id="emailText">arpglobal5@gmail.com</span>
+      <button onclick="copyEmail()" style="background-color: var(--accent); color: white; border: none; border-radius: 20px; padding: 0.3rem 0.8rem; cursor: pointer;">
+        📋 Copy
+      </button>
+    </div>
+    <p id="copyMsg" style="margin-top: 0.5rem; color: var(--secondary-text); font-size: 0.95rem;"></p>
+  </div>
 
   <footer>
     &copy; 2025 ARP Website Developer. All rights reserved.
   </footer>
 
+  <!-- Preview Modal -->
+  <div class="modal" id="previewModal">
+    <span class="close-btn" onclick="closePreview()">&times;</span>
+    <iframe id="previewFrame" src=""></iframe>
+  </div>
+
   <!-- Sign In Modal -->
   <div class="modal" id="signinModal">
     <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <span class="close-btn" onclick="closeLogin()">&times;</span>
       <h3>Sign In</h3>
       <input type="email" id="email" placeholder="Email" />
       <input type="password" id="password" placeholder="Password" />
@@ -331,8 +382,8 @@
       options.style.display = options.style.display === 'block' ? 'none' : 'block';
     }
 
-    function setTheme(value) {
-      if (value === "light") {
+    function setTheme(mode) {
+      if (mode === 'light') {
         document.body.classList.add('light-theme');
       } else {
         document.body.classList.remove('light-theme');
@@ -340,34 +391,57 @@
       document.getElementById('themeOptions').style.display = 'none';
     }
 
-    function openModal() {
+    function openLogin() {
       document.getElementById('signinModal').style.display = 'flex';
     }
 
-    function closeModal() {
+    function closeLogin() {
       document.getElementById('signinModal').style.display = 'none';
-    }
-
-    window.onclick = function(event) {
-      const modal = document.getElementById('signinModal');
-      const themeBox = document.getElementById('themeOptions');
-      if (event.target == modal) {
-        closeModal();
-      }
-      if (!event.target.closest('.theme-button')) {
-        themeBox.style.display = 'none';
-      }
     }
 
     function login() {
       const email = document.getElementById('email').value;
       const pass = document.getElementById('password').value;
-
       if (email === "arp@example.com" && pass === "123456") {
         alert("Login successful!");
-        closeModal();
+        closeLogin();
       } else {
         alert("Invalid email or password.");
+      }
+    }
+
+    function copyEmail() {
+      const email = document.getElementById('emailText').innerText;
+      navigator.clipboard.writeText(email).then(() => {
+        document.getElementById('copyMsg').innerText = "Copied to clipboard ✅";
+        setTimeout(() => {
+          document.getElementById('copyMsg').innerText = "";
+        }, 2000);
+      });
+    }
+
+    function openPreview(page) {
+      const modal = document.getElementById("previewModal");
+      const iframe = document.getElementById("previewFrame");
+      iframe.src = page;
+      modal.style.display = "flex";
+    }
+
+    function closePreview() {
+      const modal = document.getElementById("previewModal");
+      const iframe = document.getElementById("previewFrame");
+      modal.style.display = "none";
+      iframe.src = "";
+    }
+
+    window.onclick = function(e) {
+      const themeBox = document.getElementById("themeOptions");
+      const previewModal = document.getElementById("previewModal");
+      if (!e.target.closest('.theme-button')) {
+        themeBox.style.display = 'none';
+      }
+      if (e.target === previewModal) {
+        closePreview();
       }
     }
   </script>
