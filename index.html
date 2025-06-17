@@ -304,9 +304,16 @@
   &copy; 2025 ARP Website Developer. All rights reserved.
 </footer>
 
+<!-- Preview Modal -->
 <div class="modal" id="previewModal">
   <span class="close-btn" onclick="closePreview()">&times;</span>
   <iframe id="previewFrame" src=""></iframe>
+</div>
+
+<!-- 🔐 Login Modal -->
+<div class="modal" id="loginModal">
+  <span class="close-btn" onclick="closeLoginModal()" style="position:absolute;top:10px;right:20px;font-size:2rem;color:white;cursor:pointer;">&times;</span>
+  <iframe id="loginFrame" src="" style="width:90%; height:90%; border:none; border-radius:10px;"></iframe>
 </div>
 
 <script>
@@ -364,6 +371,22 @@
       closePreview();
     }
   }
+  // Sign In Button ka listener
+document.querySelector('.signin-btn').addEventListener('click', function () {
+  const loginModal = document.getElementById("loginModal");
+  const loginFrame = document.getElementById("loginFrame");
+  loginFrame.src = "login-system/index.html"; // login folder ka path
+  loginModal.style.display = "flex";
+});
+
+// Close Login Modal function
+function closeLoginModal() {
+  const loginModal = document.getElementById("loginModal");
+  const loginFrame = document.getElementById("loginFrame");
+  loginModal.style.display = "none";
+  loginFrame.src = ""; // Clean iframe on close
+}
+
 </script>
 </body>
 </html>
