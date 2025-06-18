@@ -1,14 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Login System</title>
-  <script type="module">
-    // Firebase SDKs import
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  <meta charset="UTF-8" />
+  <title>Login Page</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0f172a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
 
-    // Firebase Config (tumhara wala)
+    .box {
+      background-color: #1e293b;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 1.5rem;
+    }
+
+    .social-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .login-btn {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1rem;
+      width: 100px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .login-btn:hover {
+      background-color: #0f172a;
+    }
+
+    .login-btn img,
+    .login-btn svg {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .login-btn span {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+
+    .modal {
+      display: none;
+      position: absolute;
+      z-index: 999;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .modal-content {
+      background-color: #1e293b;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      width: 300px;
+      text-align: center;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 0.6rem;
+      margin: 0.5rem 0;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .modal-content button {
+      width: 100%;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      background-color: #0f766e;
+      color: white;
+      cursor: pointer;
+    }
+
+    .modal-content button:hover {
+      background-color: #0d5f58;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: #ef4444;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Login with any method</h2>
+    <div class="social-buttons">
+      <div class="login-btn" onclick="showModal('emailModal')">
+        <img src="assets/icons/emailicon.svg" alt="Email" />
+        <span>Email</span>
+      </div>
+      <div class="login-btn" onclick="showModal('phoneModal')">
+        <img src="assets/icons/phoneicon.svg" alt="Phone" />
+        <span>Phone</span>
+      </div>
+      <div class="login-btn" onclick="googleLogin()">
+        <img src="assets/icons/googleicon.png" alt="Google" />
+        <span>Google</span>
+      </div>
+      <div class="login-btn" onclick="githubLogin()">
+        <svg viewBox="0 0 24 24" fill="white">
+          <path d="M12 1C5.92 1 1 5.92 1 12c0 4.867 3.15 8.98 7.52 10.44.55.09.76-.24.76-.52v-2.05c-2.77.51-3.48-.67-3.7-1.29-.12-.32-.66-1.29-1.13-1.55-.38-.21-.93-.72-.01-.73.87-.01 1.49.8 1.69 1.13.99 1.66 2.57 1.2 3.2.91.1-.71.39-1.19.7-1.47-2.45-.27-5-1.22-5-5.43 0-1.2.42-2.19 1.13-2.96-.11-.28-.5-1.4.11-2.91 0 0 .92-.29 3.02 1.13a10.2 10.2 0 0 1 2.75-.37c.94 0 1.87.12 2.75.37 2.11-1.43 3.02-1.13 3.02-1.13.61 1.51.22 2.63.11 2.91.7.77 1.13 1.75 1.13 2.96 0 4.22-2.57 5.16-5.02 5.43.4.34.74 1 .74 2.03v3.03c0 .29.21.63.76.52A11.01 11.01 0 0 0 23 12c0-6.08-4.92-11-11-11z"/>
+        </svg>
+        <span>GitHub</span>
+      </div>
+      <div class="login-btn" onclick="facebookLogin()">
+        <img src="assets/icons/facebookicon.png" alt="Facebook" />
+        <span>Facebook</span>
+      </div>
+      <div class="login-btn" onclick="anonymousLogin()">
+        <img src="assets/icons/guesticon.png" alt="Guest" />
+        <span>Guest</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Modal -->
+  <div class="modal" id="emailModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="hideModal('emailModal')">&times;</button>
+      <h3>Email Login</h3>
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <button onclick="signup()">Sign Up</button>
+    </div>
+  </div>
+
+  <!-- Phone Modal -->
+  <div class="modal" id="phoneModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="hideModal('phoneModal')">&times;</button>
+      <h3>Phone Login</h3>
+      <input type="text" id="phone" placeholder="+923001234567" />
+      <div id="recaptcha-container"></div>
+      <button onclick="sendOTP()">Send OTP</button>
+      <input type="text" id="otp" placeholder="Enter OTP" />
+      <button onclick="verifyOTP()">Verify OTP</button>
+    </div>
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signInWithPopup,
+      signInAnonymously,
+      signInWithPhoneNumber,
+      RecaptchaVerifier,
+      GoogleAuthProvider,
+      GithubAuthProvider,
+      FacebookAuthProvider
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyA3hm7EbyCEwbmBxCwOhpyQtFo9eC_YSmo",
       authDomain: "arp-login-system.firebaseapp.com",
@@ -21,108 +208,85 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
 
-    // Login function
+    const googleProvider = new GoogleAuthProvider();
+    const githubProvider = new GithubAuthProvider();
+    const facebookProvider = new FacebookAuthProvider();
+
     window.login = () => {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          alert("Login Success ✅");
-          console.log("User:", user.email);
-        })
-        .catch((error) => {
-          alert("Login Error: " + error.message);
-        });
+        .then(() => alert("Login Success ✅"))
+        .catch(err => alert("Error: " + err.message));
     };
 
-    // Signup function
     window.signup = () => {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          alert("Signup Success ✅");
-          console.log("User:", user.email);
-        })
-        .catch((error) => {
-          alert("Signup Error: " + error.message);
-        });
+        .then(() => alert("Signup Success ✅"))
+        .catch(err => alert("Error: " + err.message));
     };
 
-    // Google login function
     window.googleLogin = () => {
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          const user = result.user;
-          alert("Google Login Success ✅");
-          console.log("User:", user.displayName, user.email);
+      signInWithPopup(auth, googleProvider)
+        .then(() => alert("Google Login Success ✅"))
+        .catch(err => alert("Error: " + err.message));
+    };
+
+    window.githubLogin = () => {
+      signInWithPopup(auth, githubProvider)
+        .then(() => alert("GitHub Login Success ✅"))
+        .catch(err => alert("Error: " + err.message));
+    };
+
+    window.facebookLogin = () => {
+      signInWithPopup(auth, facebookProvider)
+        .then(() => alert("Facebook Login Success ✅"))
+        .catch(err => alert("Error: " + err.message));
+    };
+
+    window.anonymousLogin = () => {
+      signInAnonymously(auth)
+        .then(() => alert("Anonymous Login Success ✅"))
+        .catch(err => alert("Error: " + err.message));
+    };
+
+    window.setupRecaptcha = () => {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'normal',
+        callback: () => console.log("reCAPTCHA verified"),
+        'expired-callback': () => alert("reCAPTCHA expired.")
+      });
+    };
+
+    window.sendOTP = () => {
+      const phoneNumber = document.getElementById("phone").value;
+      window.setupRecaptcha();
+      const appVerifier = window.recaptchaVerifier;
+      signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        .then(result => {
+          window.confirmationResult = result;
+          alert("OTP Sent 📱");
         })
-        .catch((error) => {
-          alert("Google Login Error: " + error.message);
-        });
+        .catch(err => alert("Error: " + err.message));
+    };
+
+    window.verifyOTP = () => {
+      const code = document.getElementById("otp").value;
+      window.confirmationResult.confirm(code)
+        .then(() => alert("Phone Login Success ✅"))
+        .catch(err => alert("Invalid OTP ❌"));
+    };
+
+    window.showModal = id => {
+      document.getElementById(id).style.display = 'block';
+    };
+
+    window.hideModal = id => {
+      document.getElementById(id).style.display = 'none';
     };
   </script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #0f172a;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .box {
-      background-color: #1e293b;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      width: 300px;
-      text-align: center;
-    }
-    input {
-      width: 100%;
-      padding: 0.6rem;
-      margin: 0.5rem 0;
-      border: none;
-      border-radius: 5px;
-    }
-    button {
-      margin-top: 1rem;
-      width: 100%;
-      padding: 0.7rem;
-      border: none;
-      border-radius: 5px;
-      background-color: #0f766e;
-      color: white;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    button:hover {
-      background-color: #0d5f58;
-    }
-    .google-btn {
-      background-color: #db4437;
-    }
-    .google-btn:hover {
-      background-color: #c1351d;
-    }
-  </style>
-</head>
-<body>
-  <div class="box">
-    <h2>Login / Signup</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <button onclick="signup()">Sign Up</button>
-    <button class="google-btn" onclick="googleLogin()">Login with Google</button>
-  </div>
 </body>
 </html>
