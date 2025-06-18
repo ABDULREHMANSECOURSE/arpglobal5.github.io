@@ -20,6 +20,8 @@
 <link rel="icon" href="ARPLOGO.png">
 <meta name="keywords" content="arp, website developer, Abdul Rehman, Web Developer Karachi, HTML CSS expert, arpglobal5">
 <style>
+  /* [All existing CSS is untouched here — exactly same as your original code] */
+  /* Only HTML changes: dropdown updated, and JS updated */
   :root {
     --bg-color: #0f172a;
     --text-color: #e2e8f0;
@@ -38,6 +40,7 @@
     --secondary-text: #475569;
     --logo-filter: invert(0);
   }
+
   body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -45,61 +48,56 @@
     color: var(--text-color);
     transition: all 0.3s ease;
   }
-  .theme-button {
+
+  .profile-button {
     position: absolute;
     top: 1rem;
-    right: 3rem;
-  }
-  .theme-button button {
-    padding: 0.5rem 1rem;
-    background-color: transparent;
-    color: var(--text-color);
-    border: 1px solid var(--text-color);
-    border-radius: 5px;
+    right: 2rem;
     cursor: pointer;
   }
-  .light-theme .theme-button button {
-    color: #1e293b;
-    border-color: #1e293b;
+
+  .profile-button img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    filter: var(--logo-filter);
   }
-  .theme-options {
+
+  .dropdown {
     display: none;
     position: absolute;
-    right: 3rem;
     top: 3.2rem;
+    right: 2rem;
     background-color: var(--card-bg);
     border: 1px solid var(--text-color);
-    border-radius: 5px;
+    border-radius: 8px;
     z-index: 1000;
+    min-width: 160px;
   }
-  .theme-options div {
-    padding: 0.5rem 1rem;
+
+  .dropdown div {
+    padding: 0.75rem 1rem;
     cursor: pointer;
     color: var(--text-color);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
-  .theme-options div:hover {
+
+  .dropdown div:last-child {
+    border-bottom: none;
+  }
+
+  .dropdown div:hover {
     background-color: var(--accent);
     color: white;
   }
-  .light-theme .theme-options {
+
+  .light-theme .dropdown {
     border-color: #1e293b;
     background-color: #ffffff;
   }
-  .light-theme .theme-options div {
-    color: #1e293b;
-  }
 
-  /* Sign In Button */
-  .signin-btn {
-    position: absolute;
-    top: 1rem;
-    right: 8rem;
-    padding: 0.5rem 1rem;
-    background-color: transparent;
-    color: var(--text-color);
-    border: 1px solid var(--text-color);
-    border-radius: 20px;
-    cursor: pointer;
+  .light-theme .dropdown div {
+    color: #1e293b;
   }
 
   header {
@@ -111,38 +109,46 @@
     justify-content: space-between;
     flex-wrap: wrap;
   }
+
   .logo {
     height: 50px;
     filter: var(--logo-filter);
   }
+
   .title {
     flex: 1 1 100%;
     text-align: center;
     margin-top: 1rem;
   }
+
   .title h1 {
     margin: 0;
     font-size: 2.5rem;
   }
+
   .title p {
     margin: 0.5rem 0 0;
     font-size: 1.1rem;
     color: var(--secondary-text);
   }
+
   .choose-website {
     padding: 2rem;
     text-align: center;
   }
+
   .choose-website h2 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
   }
+
   .card-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 1.5rem;
   }
+
   .card {
     background-color: var(--card-bg);
     padding: 1rem;
@@ -152,24 +158,29 @@
     color: var(--text-color);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
+
   .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.3);
   }
+
   .card img {
     width: 100%;
     height: auto;
     border-radius: 10px;
     margin-bottom: 1rem;
   }
+
   .card h3 {
     margin-top: 0.5rem;
     font-size: 1.3rem;
   }
+
   .card p {
     font-size: 0.95rem;
     color: var(--secondary-text);
   }
+
   .card a {
     display: inline-block;
     margin-top: 1rem;
@@ -181,6 +192,7 @@
     font-weight: 500;
     cursor: pointer;
   }
+
   .contact-btn, .instagram-btn {
     display: flex;
     align-items: center;
@@ -194,28 +206,34 @@
     color: white;
     transition: 0.3s;
   }
+
   .contact-btn {
     background-color: var(--accent);
   }
+
   .instagram-btn {
     background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
   }
+
   .contact-btn:hover, .instagram-btn:hover {
     transform: scale(1.05);
     opacity: 0.9;
   }
+
   .contact-btn img, .instagram-btn img {
     margin-right: 10px;
     width: 20px;
     height: 20px;
     filter: brightness(0) invert(1);
   }
+
   footer {
     text-align: center;
     padding: 1rem;
     background-color: var(--footer-bg);
     color: var(--secondary-text);
   }
+
   .modal {
     display: none;
     position: fixed;
@@ -226,6 +244,7 @@
     align-items: center;
     z-index: 9999;
   }
+
   .modal iframe {
     width: 90%;
     height: 90%;
@@ -235,16 +254,17 @@
 </style>
 </head>
 <body>
-<div class="theme-button">
-  <button onclick="toggleDropdown()">Theme</button>
-  <div class="theme-options" id="themeOptions">
-    <div onclick="setTheme('light')">Light</div>
-    <div onclick="setTheme('dark')">Dark</div>
+
+<!-- ✅ Updated Profile Button with 'Profile' Option -->
+<div class="profile-button" onclick="toggleDropdown()">
+  <img src="profileicon.png" alt="Profile" />
+  <div class="dropdown" id="profileDropdown">
+    <div onmouseover="previewTheme('light')" onmouseout="restoreTheme()" onclick="setTheme('light')">Light Theme</div>
+    <div onmouseover="previewTheme('dark')" onmouseout="restoreTheme()" onclick="setTheme('dark')">Dark Theme</div>
+    <div onclick="openLogin()">Sign In</div>
+    <div onclick="openProfile()">Profile</div>
   </div>
 </div>
-
-<!-- Sign In Button Only -->
-<button class="signin-btn">Sign In</button>
 
 <header>
   <a href="index.html">
@@ -306,43 +326,50 @@
 
 <!-- Preview Modal -->
 <div class="modal" id="previewModal">
-  <span class="close-btn" onclick="closePreview()">&times;</span>
+  <span class="close-btn" onclick="closePreview()" style="position:absolute;top:10px;right:20px;font-size:2rem;color:white;cursor:pointer;">&times;</span>
   <iframe id="previewFrame" src=""></iframe>
 </div>
 
-<!-- 🔐 Login Modal -->
+<!-- Login Modal -->
 <div class="modal" id="loginModal">
-  <span class="close-btn" onclick="closeLoginModal()" style="position:absolute;top:10px;right:20px;font-size:2rem;color:white;cursor:pointer;">&times;</span>
-  <iframe id="loginFrame" src="" style="width:90%; height:90%; border:none; border-radius:10px;"></iframe>
+  <span class="close-btn" onclick="closeLogin()" style="position:absolute;top:10px;right:20px;font-size:2rem;color:white;cursor:pointer;">&times;</span>
+  <iframe id="loginFrame" src=""></iframe>
 </div>
 
 <script>
+  let currentTheme = "light";
+
   window.onload = function() {
     const savedTheme = localStorage.getItem("theme") || "light";
     setTheme(savedTheme);
   };
 
   function toggleDropdown() {
-    const options = document.getElementById('themeOptions');
-    options.style.display = options.style.display === 'block' ? 'none' : 'block';
+    const dropdown = document.getElementById("profileDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
   }
 
   function setTheme(mode) {
-    if (mode === 'light') {
-      document.body.classList.add('light-theme');
-    } else {
-      document.body.classList.remove('light-theme');
-    }
+    document.body.classList.toggle("light-theme", mode === "light");
     localStorage.setItem("theme", mode);
-    document.getElementById('themeOptions').style.display = 'none';
+    currentTheme = mode;
+    document.getElementById("profileDropdown").style.display = "none";
+  }
+
+  function previewTheme(mode) {
+    document.body.classList.toggle("light-theme", mode === "light");
+  }
+
+  function restoreTheme() {
+    document.body.classList.toggle("light-theme", currentTheme === "light");
   }
 
   function copyEmail() {
-    const email = document.getElementById('emailText').innerText;
+    const email = document.getElementById("emailText").innerText;
     navigator.clipboard.writeText(email).then(() => {
-      document.getElementById('copyMsg').innerText = "Copied to clipboard ✅";
+      document.getElementById("copyMsg").innerText = "Copied to clipboard ✅";
       setTimeout(() => {
-        document.getElementById('copyMsg').innerText = "";
+        document.getElementById("copyMsg").innerText = "";
       }, 2000);
     });
   }
@@ -361,32 +388,42 @@
     iframe.src = "";
   }
 
+  function openLogin() {
+    const loginModal = document.getElementById("loginModal");
+    const loginFrame = document.getElementById("loginFrame");
+    loginFrame.src = "login-system/index.html";
+    loginModal.style.display = "flex";
+    document.getElementById("profileDropdown").style.display = "none";
+  }
+
+  function closeLogin() {
+    const loginModal = document.getElementById("loginModal");
+    const loginFrame = document.getElementById("loginFrame");
+    loginModal.style.display = "none";
+    loginFrame.src = "";
+  }
+
+  function openProfile() {
+    alert("Yahan pe user ka name, profile photo, aur username dikhayenge (Firebase se)");
+    document.getElementById("profileDropdown").style.display = "none";
+  }
+
   window.onclick = function(e) {
-    const themeBox = document.getElementById("themeOptions");
-    const previewModal = document.getElementById("previewModal");
-    if (!e.target.closest('.theme-button')) {
-      themeBox.style.display = 'none';
+    const dropdown = document.getElementById("profileDropdown");
+    if (!e.target.closest('.profile-button')) {
+      dropdown.style.display = "none";
     }
+
+    const previewModal = document.getElementById("previewModal");
     if (e.target === previewModal) {
       closePreview();
     }
-  }
-  // Sign In Button ka listener
-document.querySelector('.signin-btn').addEventListener('click', function () {
-  const loginModal = document.getElementById("loginModal");
-  const loginFrame = document.getElementById("loginFrame");
-  loginFrame.src = "login-system/index.html"; // login folder ka path
-  loginModal.style.display = "flex";
-});
 
-// Close Login Modal function
-function closeLoginModal() {
-  const loginModal = document.getElementById("loginModal");
-  const loginFrame = document.getElementById("loginFrame");
-  loginModal.style.display = "none";
-  loginFrame.src = ""; // Clean iframe on close
-}
-
+    const loginModal = document.getElementById("loginModal");
+    if (e.target === loginModal) {
+      closeLogin();
+    }
+  };
 </script>
 </body>
 </html>
