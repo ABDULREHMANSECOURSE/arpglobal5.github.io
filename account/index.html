@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account - ARPGLOBAL5</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h2 { margin-bottom: 20px; }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      background: #1d4ed8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>Welcome to ARPGLOBAL5</h2>
+
+    <div id="authSection">
+      <button onclick="signInWithGoogle()">
+        <img src="/icons/googleicon.png" style="height: 20px; vertical-align: middle; margin-right: 8px;">
+        Sign in with Google
+      </button>
+    </div>
+
+    <div id="usernameSection" class="hidden">
+      <p style="margin-bottom: 10px;">Set your username and password</p>
+      <input type="text" id="username" placeholder="Username (min 3 chars)">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="saveUserData()">Save</button>
+    </div>
+
+    <div id="loginSection" class="hidden">
+      <p>Already have an account?</p>
+      <input type="text" id="loginUsername" placeholder="Username">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button onclick="loginUser()">Login</button>
+    </div>
+  </div>
+
+  <script>
+    // Replace this with your actual Firebase config:
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    let currentUser = null;
+
+    function signInWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(result => {
+          currentUser = result.user;
+          checkUsernameExists(currentUser.uid);
+        })
+        .catch(error => alert("Sign-in error: " + error.message));
+    }
+
+    function checkUsernameExists(uid) {
+      db.ref("users/" + uid).once("value").then(snapshot => {
+        if (snapshot.exists()) {
+          window.location.href = "/"; // Already registered, redirect to home
+        } else {
+          document.getElementById("authSection").classList.add("hidden");
+          document.getElementById("usernameSection").classList.remove("hidden");
+        }
+      });
+    }
+
+    function saveUserData() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (username.length < 3) {
+        alert("Username must be at least 3 characters.");
+        return;
+      }
+      if (password.length < 4) {
+        alert("Password too short.");
+        return;
+      }
+
+      // Check if username is unique
+      db.ref("usernames/" + username).once("value").then(snapshot => {
+        if (snapshot.exists()) {
+          alert("Username already taken. Try another.");
+        } else {
+          // Save data
+          const userData = {
+            uid: currentUser.uid,
+            name: currentUser.displayName,
+            email: currentUser.email,
+            photo: currentUser.photoURL,
+            username: username,
+            password: password // In real projects, hash this
+          };
+          db.ref("users/" + currentUser.uid).set(userData);
+          db.ref("usernames/" + username).set(currentUser.uid);
+          alert("Account setup complete!");
+          window.location.href = "/";
+        }
+      });
+    }
+
+    function loginUser() {
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      db.ref("usernames/" + username).once("value").then(snapshot => {
+        if (!snapshot.exists()) {
+          alert("Username not found.");
+          return;
+        }
+        const uid = snapshot.val();
+        db.ref("users/" + uid).once("value").then(userSnap => {
+          const user = userSnap.val();
+          if (user.password === password) {
+            alert("Login successful!");
+            // Optional: Save in localStorage/session or use Firebase custom claims
+            window.location.href = "/";
+          } else {
+            alert("Incorrect password.");
+          }
+        });
+      });
+    }
+
+    // Auto show login if already signed in but no Firebase data
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        currentUser = user;
+        checkUsernameExists(user.uid);
+      } else {
+        document.getElementById("loginSection").classList.remove("hidden");
+      }
+    });
+  </script>
+
+</body>
+</html>

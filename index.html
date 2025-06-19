@@ -1,429 +1,179 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "ARP Website Developer",
-  "url": "https://arpglobal5.github.io/",
-  "logo": "https://arpglobal5.github.io/ARPLOGO.png",
-  "sameAs": [
-    "https://instagram.com/arpglobal5",
-    "https://wa.me/923000000000"
-  ]
-}
-</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ARP Website Developer</title>
-<link rel="icon" href="ARPLOGO.png">
-<meta name="keywords" content="arp, website developer, Abdul Rehman, Web Developer Karachi, HTML CSS expert, arpglobal5">
-<style>
-  /* [All existing CSS is untouched here — exactly same as your original code] */
-  /* Only HTML changes: dropdown updated, and JS updated */
-  :root {
-    --bg-color: #0f172a;
-    --text-color: #e2e8f0;
-    --card-bg: #1e293b;
-    --accent: #0f766e;
-    --footer-bg: #0f172a;
-    --secondary-text: #cbd5e1;
-    --logo-filter: invert(1);
-  }
-  .light-theme {
-    --bg-color: #f4f4f4;
-    --text-color: #1e293b;
-    --card-bg: #ffffff;
-    --accent: #0f766e;
-    --footer-bg: #e2e8f0;
-    --secondary-text: #475569;
-    --logo-filter: invert(0);
-  }
+  <meta charset="UTF-8" />
+  <meta name="ARP Chat" content="width=device-width, initial-scale=1.0"/>
+  <title>ARPGLOBAL5 Chat</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-section img { height: 40px; }
+    .profile-icon {
+      position: relative;
+      cursor: pointer;
+    }
+    .profile-icon img {
+      height: 32px;
+      width: 32px;
+      border-radius: 50%;
+    }
+    .profile-popup {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 40px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 120px;
+      padding: 10px;
+      z-index: 10;
+    }
+    .profile-popup a {
+      text-decoration: none;
+      display: block;
+      color: #333;
+      padding: 5px 0;
+    }
+    .profile-popup a:hover { color: #1d4ed8; }
 
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    transition: all 0.3s ease;
-  }
-
-  .profile-button {
-    position: absolute;
-    top: 1rem;
-    right: 2rem;
-    cursor: pointer;
-  }
-
-  .profile-button img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    filter: var(--logo-filter);
-  }
-
-  .dropdown {
-    display: none;
-    position: absolute;
-    top: 3.2rem;
-    right: 2rem;
-    background-color: var(--card-bg);
-    border: 1px solid var(--text-color);
-    border-radius: 8px;
-    z-index: 1000;
-    min-width: 160px;
-  }
-
-  .dropdown div {
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    color: var(--text-color);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-
-  .dropdown div:last-child {
-    border-bottom: none;
-  }
-
-  .dropdown div:hover {
-    background-color: var(--accent);
-    color: white;
-  }
-
-  .light-theme .dropdown {
-    border-color: #1e293b;
-    background-color: #ffffff;
-  }
-
-  .light-theme .dropdown div {
-    color: #1e293b;
-  }
-
-  header {
-    background-color: var(--card-bg);
-    color: var(--text-color);
-    padding: 1.5rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-  }
-
-  .logo {
-    height: 50px;
-    filter: var(--logo-filter);
-  }
-
-  .title {
-    flex: 1 1 100%;
-    text-align: center;
-    margin-top: 1rem;
-  }
-
-  .title h1 {
-    margin: 0;
-    font-size: 2.5rem;
-  }
-
-  .title p {
-    margin: 0.5rem 0 0;
-    font-size: 1.1rem;
-    color: var(--secondary-text);
-  }
-
-  .choose-website {
-    padding: 2rem;
-    text-align: center;
-  }
-
-  .choose-website h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.5rem;
-  }
-
-  .card {
-    background-color: var(--card-bg);
-    padding: 1rem;
-    border-radius: 15px;
-    width: 300px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    color: var(--text-color);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
-  }
-
-  .card img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin-bottom: 1rem;
-  }
-
-  .card h3 {
-    margin-top: 0.5rem;
-    font-size: 1.3rem;
-  }
-
-  .card p {
-    font-size: 0.95rem;
-    color: var(--secondary-text);
-  }
-
-  .card a {
-    display: inline-block;
-    margin-top: 1rem;
-    padding: 0.5rem 1.2rem;
-    background-color: var(--accent);
-    color: white;
-    border-radius: 20px;
-    text-decoration: none;
-    font-weight: 500;
-    cursor: pointer;
-  }
-
-  .contact-btn, .instagram-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: max-content;
-    margin: 1rem auto;
-    padding: 0.8rem 1.5rem;
-    border-radius: 30px;
-    font-size: 1.1rem;
-    text-decoration: none;
-    color: white;
-    transition: 0.3s;
-  }
-
-  .contact-btn {
-    background-color: var(--accent);
-  }
-
-  .instagram-btn {
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-  }
-
-  .contact-btn:hover, .instagram-btn:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
-  }
-
-  .contact-btn img, .instagram-btn img {
-    margin-right: 10px;
-    width: 20px;
-    height: 20px;
-    filter: brightness(0) invert(1);
-  }
-
-  footer {
-    text-align: center;
-    padding: 1rem;
-    background-color: var(--footer-bg);
-    color: var(--secondary-text);
-  }
-
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-
-  .modal iframe {
-    width: 90%;
-    height: 90%;
-    border: none;
-    border-radius: 10px;
-  }
-</style>
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .chat-box {
+      flex: 1;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+    .chat-input {
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .chat-input button {
+      padding: 10px 15px;
+      background: #1d4ed8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .chat-message {
+      margin: 5px 0;
+      padding: 8px 12px;
+      background: #e5e7eb;
+      border-radius: 6px;
+      max-width: 70%;
+    }
+    .chat-message.user {
+      background: #dbeafe;
+      align-self: flex-end;
+    }
+  </style>
 </head>
 <body>
 
-<!-- ✅ Updated Profile Button with 'Profile' Option -->
-<div class="profile-button" onclick="toggleDropdown()">
-  <img src="profileicon.png" alt="Profile" />
-  <div class="dropdown" id="profileDropdown">
-    <div onmouseover="previewTheme('light')" onmouseout="restoreTheme()" onclick="setTheme('light')">Light Theme</div>
-    <div onmouseover="previewTheme('dark')" onmouseout="restoreTheme()" onclick="setTheme('dark')">Dark Theme</div>
-    <div onclick="openLogin()">Sign In</div>
-    <div onclick="openProfile()">Profile</div>
-  </div>
-</div>
-
-<header>
-  <a href="index.html">
-    <img src="ARPLOGO.png" alt="ARP Logo" class="logo" />
-  </a>
-  <div class="title">
-    <h1>ARP Website Developer</h1>
-    <p>I create clean, responsive, and fast websites using HTML and CSS.</p>
-  </div>
-</header>
-
-<section class="choose-website">
-  <h2>🖥️ Choose Your Website</h2>
-  <div class="card-container">
-    <div class="card">
-      <img src="https://via.placeholder.com/300x160?text=Portfolio+Preview" alt="Portfolio">
-      <h3>Portfolio Website</h3>
-      <p>Perfect for showcasing your work, skills, and resume.</p>
-      <a onclick="openPreview('demo/portfolio.html')">Preview</a>
+  <!-- Header -->
+  <header>
+    <div class="logo-section">
+      <img src="arplogo.png" alt="Logo">
     </div>
-    <div class="card">
-      <img src="https://via.placeholder.com/300x160?text=Business+Website" alt="Business">
-      <h3>Business Website</h3>
-      <p>Ideal for companies and service-based businesses.</p>
-      <a onclick="openPreview('demo/business.html')">Preview</a>
+    <div class="profile-icon" onclick="togglePopup()">
+      <img src="profileicon.png" id="userIcon" alt="Profile">
+      <div class="profile-popup" id="profilePopup">
+        <a href="/account/index.html" id="accountLink">Account</a>
+      </div>
     </div>
-    <div class="card">
-      <img src="https://via.placeholder.com/300x160?text=Online+Store" alt="Store">
-      <h3>Online Store</h3>
-      <p>Sell your products with a beautiful ecommerce layout.</p>
-      <a onclick="openPreview('demo/store.html')">Preview</a>
+  </header>
+
+  <!-- Chat Area -->
+  <div class="chat-container">
+    <div class="chat-box" id="chatBox"></div>
+    <div class="chat-input">
+      <input type="text" id="messageInput" placeholder="Type a message...">
+      <button onclick="sendMessage()">Send</button>
     </div>
   </div>
-</section>
 
-<a href="https://wa.me/923000000000" class="contact-btn" target="_blank">
-  <img src="https://img.icons8.com/ios-filled/24/ffffff/whatsapp--v1.png" alt="WhatsApp" />
-  Contact Me on WhatsApp
-</a>
-<a href="https://www.instagram.com/arpglobal5" class="instagram-btn" target="_blank">
-  <img src="https://img.icons8.com/ios-filled/24/ffffff/instagram-new--v1.png" alt="Instagram" />
-  Contact Me on Instagram
-</a>
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-<div style="text-align: center; margin: 2rem;">
-  <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">📧 Email Me at:</p>
-  <div style="display: inline-flex; align-items: center; gap: 0.5rem; background-color: var(--card-bg); color: var(--text-color); padding: 0.5rem 1rem; border-radius: 30px;">
-    <span id="emailText">arpglobal@gmail.com</span>
-    <button onclick="copyEmail()" style="background-color: var(--accent); color: white; border: none; border-radius: 20px; padding: 0.3rem 0.8rem; cursor: pointer;">
-      📋 Copy
-    </button>
-  </div>
-  <p id="copyMsg" style="margin-top: 0.5rem; color: var(--secondary-text); font-size: 0.95rem;"></p>
-</div>
-
-<footer>
-  &copy; 2025 ARP Website Developer. All rights reserved.
-</footer>
-
-<!-- Preview Modal -->
-<div class="modal" id="previewModal">
-  <span class="close-btn" onclick="closePreview()" style="position:absolute;top:10px;right:20px;font-size:2rem;color:white;cursor:pointer;">&times;</span>
-  <iframe id="previewFrame" src=""></iframe>
-</div>
-
-<!-- Login Modal -->
-<div class="modal" id="loginModal">
-  <span class="close-btn" onclick="closeLogin()" style="position:absolute;top:10px;right:20px;font-size:2rem;color:white;cursor:pointer;">&times;</span>
-  <iframe id="loginFrame" src=""></iframe>
-</div>
-
-<script>
-  let currentTheme = "light";
-
-  window.onload = function() {
-    const savedTheme = localStorage.getItem("theme") || "light";
-    setTheme(savedTheme);
-  };
-
-  function toggleDropdown() {
-    const dropdown = document.getElementById("profileDropdown");
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-  }
-
-  function setTheme(mode) {
-    document.body.classList.toggle("light-theme", mode === "light");
-    localStorage.setItem("theme", mode);
-    currentTheme = mode;
-    document.getElementById("profileDropdown").style.display = "none";
-  }
-
-  function previewTheme(mode) {
-    document.body.classList.toggle("light-theme", mode === "light");
-  }
-
-  function restoreTheme() {
-    document.body.classList.toggle("light-theme", currentTheme === "light");
-  }
-
-  function copyEmail() {
-    const email = document.getElementById("emailText").innerText;
-    navigator.clipboard.writeText(email).then(() => {
-      document.getElementById("copyMsg").innerText = "Copied to clipboard ✅";
-      setTimeout(() => {
-        document.getElementById("copyMsg").innerText = "";
-      }, 2000);
+    // Profile popup
+    function togglePopup() {
+      const popup = document.getElementById("profilePopup");
+      popup.style.display = popup.style.display === "block" ? "none" : "block";
+    }
+    document.addEventListener("click", (e) => {
+      if (!document.querySelector(".profile-icon").contains(e.target)) {
+        document.getElementById("profilePopup").style.display = "none";
+      }
     });
-  }
 
-  function openPreview(page) {
-    const modal = document.getElementById("previewModal");
-    const iframe = document.getElementById("previewFrame");
-    iframe.src = page;
-    modal.style.display = "flex";
-  }
-
-  function closePreview() {
-    const modal = document.getElementById("previewModal");
-    const iframe = document.getElementById("previewFrame");
-    modal.style.display = "none";
-    iframe.src = "";
-  }
-
-  function openLogin() {
-    const loginModal = document.getElementById("loginModal");
-    const loginFrame = document.getElementById("loginFrame");
-    loginFrame.src = "login-system/index.html";
-    loginModal.style.display = "flex";
-    document.getElementById("profileDropdown").style.display = "none";
-  }
-
-  function closeLogin() {
-    const loginModal = document.getElementById("loginModal");
-    const loginFrame = document.getElementById("loginFrame");
-    loginModal.style.display = "none";
-    loginFrame.src = "";
-  }
-
-  function openProfile() {
-    alert("Yahan pe user ka name, profile photo, aur username dikhayenge (Firebase se)");
-    document.getElementById("profileDropdown").style.display = "none";
-  }
-
-  window.onclick = function(e) {
-    const dropdown = document.getElementById("profileDropdown");
-    if (!e.target.closest('.profile-button')) {
-      dropdown.style.display = "none";
+    // Chat Message
+    function sendMessage() {
+      const input = document.getElementById("messageInput");
+      const chatBox = document.getElementById("chatBox");
+      const msg = input.value.trim();
+      if (msg) {
+        const div = document.createElement("div");
+        div.className = "chat-message user";
+        div.textContent = msg;
+        chatBox.appendChild(div);
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
     }
 
-    const previewModal = document.getElementById("previewModal");
-    if (e.target === previewModal) {
-      closePreview();
-    }
+    // Auth check
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById("userIcon").src = user.photoURL || "profileicon.png";
+        document.getElementById("accountLink").href = "/account/index.html";
+      } else {
+        document.getElementById("userIcon").src = "profileicon.png";
+        document.getElementById("accountLink").href = "/account/index.html";
+      }
+    });
+  </script>
 
-    const loginModal = document.getElementById("loginModal");
-    if (e.target === loginModal) {
-      closeLogin();
-    }
-  };
-</script>
 </body>
 </html>
