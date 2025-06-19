@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile | ARP</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <style>
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: none;
+      margin-top: 0.5rem;
+      background: #1f1f1f;
+      color: #fff;
+    }
+
+    input[type="file"] {
+      padding: 0.7rem;
+      background-color: #1f1f1f;
+      border: 1px solid #00fff7;
+      border-radius: 8px;
+      color: #00fff7;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    input[type="file"]::-webkit-file-upload-button {
+      background: #00fff7;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button {
+      margin-top: 2rem;
+      padding: 0.7rem 1.5rem;
+      background: #00fff7;
+      border: none;
+      color: black;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .crop-container {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    .crop-preview {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border: 2px solid #00fff7;
+      border-radius: 10px;
+    }
+
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      object-fit: cover;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Your Profile</h2>
+
+  <div id="profileSection">
+    <label>Profile Photo:
+      <input type="file" id="profilePhoto" accept="image/*">
+    </label>
+    <div class="crop-container" id="cropContainer">
+      <canvas id="cropCanvas" class="crop-preview"></canvas>
+      <button onclick="cropImage()">Use This Crop</button>
+    </div>
+    <img id="preview" class="profile-pic" src="" alt="Preview" />
+
+    <label>Name:
+      <input type="text" id="displayName">
+    </label>
+
+    <label>Bio:
+      <textarea id="bio" rows="4"></textarea>
+    </label>
+
+    <label>Date of Birth:
+      <input type="date" id="dob">
+    </label>
+
+    <button onclick="saveProfile()">Save Profile</button>
+    <button onclick="deleteAccount()" style="background:#ff3b3b; color:white;">Delete Account</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA3hm7EbyCEwbmBxCwOhpyQtFo9eC_YSmo",
+      authDomain: "arp-login-system.firebaseapp.com",
+      projectId: "arp-login-system",
+      storageBucket: "arp-login-system.appspot.com",
+      messagingSenderId: "15398944411",
+      appId: "1:15398944411:web:54726247af61ca8b98103e"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    let currentUID = null;
+    let selectedImage = null;
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        currentUID = user.uid;
+        loadProfile();
+      } else {
+        alert("Please login first.");
+        window.location.href = "account.html";
+      }
+    });
+
+    document.getElementById("profilePhoto").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      selectedImage = file;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.getElementById("cropCanvas");
+          const ctx = canvas.getContext("2d");
+          const size = Math.min(img.width, img.height);
+          canvas.width = 200;
+          canvas.height = 200;
+          ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, 200, 200);
+          document.getElementById("cropContainer").style.display = "block";
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function cropImage() {
+      const canvas = document.getElementById("cropCanvas");
+      const dataUrl = canvas.toDataURL("image/png");
+      document.getElementById("preview").src = dataUrl;
+      document.getElementById("cropContainer").style.display = "none";
+    }
+
+    async function loadProfile() {
+      const doc = await db.collection("profiles").doc(currentUID).get();
+      if (doc.exists) {
+        const data = doc.data();
+        document.getElementById("displayName").value = data.displayName || "";
+        document.getElementById("bio").value = data.bio || "";
+        document.getElementById("dob").value = data.dob || "";
+        if (data.photoURL) {
+          document.getElementById("preview").src = data.photoURL;
+        }
+      }
+    }
+
+    async function saveProfile() {
+      const name = document.getElementById("displayName").value;
+      const bio = document.getElementById("bio").value;
+      const dob = document.getElementById("dob").value;
+      const preview = document.getElementById("preview");
+      let photoURL = preview.src;
+
+      if (selectedImage) {
+        const ref = storage.ref(`profile_photos/${currentUID}`);
+        const blob = await (await fetch(preview.src)).blob();
+        await ref.put(blob);
+        photoURL = await ref.getDownloadURL();
+      }
+
+      await db.collection("profiles").doc(currentUID).set({
+        displayName: name,
+        bio: bio,
+        dob: dob,
+        photoURL: photoURL
+      });
+
+      alert("Profile saved successfully!");
+    }
+
+    async function deleteAccount() {
+      const confirmDelete = confirm("Are you sure you want to delete your account? This action cannot be undone.");
+      if (!confirmDelete) return;
+
+      try {
+        await db.collection("profiles").doc(currentUID).delete();
+        await storage.ref(`profile_photos/${currentUID}`).delete().catch(() => {});
+        const user = auth.currentUser;
+        await user.delete();
+
+        alert("Account deleted successfully.");
+        window.location.href = "../index.html";
+      } catch (error) {
+        alert("Error deleting account: " + error.message);
+      }
+    }
+  </script>
+</body>
+
+</html>

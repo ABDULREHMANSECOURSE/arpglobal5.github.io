@@ -5,6 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ARP</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
   <style>
     html, body {
       margin: 0;
@@ -45,6 +49,7 @@
       width: 40px;
       cursor: pointer;
       border-radius: 50%;
+      object-fit: cover;
     }
 
     .profile-options {
@@ -133,11 +138,10 @@
   <header>
     <img src="arplogo.png" alt="ARP Logo" class="logo" />
     <div class="profile-container" onmouseenter="keepProfileOpen(true)" onmouseleave="keepProfileOpen(false)">
-      <img src="profileicon.png" alt="Profile" class="profile-icon" onmouseenter="showProfileOptions()" />
+      <img src="profileicon.png" alt="Profile" class="profile-icon" id="userProfileIcon" onmouseenter="showProfileOptions()" />
       <div class="profile-options" id="profileOptions">
         <p><a href="account/account.html" style="color:white; text-decoration:none;">Account</a></p>
         <p>Settings</p>
-        <p>Logout</p>
       </div>
     </div>
   </header>
@@ -184,6 +188,30 @@
         }, 1000);
       }
     }
+
+    // Firebase Profile Photo Loader
+    const firebaseConfig = {
+      apiKey: "AIzaSyA3hm7EbyCEwbmBxCwOhpyQtFo9eC_YSmo",
+      authDomain: "arp-login-system.firebaseapp.com",
+      projectId: "arp-login-system",
+      storageBucket: "arp-login-system.appspot.com",
+      messagingSenderId: "15398944411",
+      appId: "1:15398944411:web:54726247af61ca8b98103e"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        db.collection("profiles").doc(user.uid).get().then(doc => {
+          if (doc.exists && doc.data().photoURL) {
+            document.getElementById("userProfileIcon").src = doc.data().photoURL;
+          }
+        });
+      }
+    });
   </script>
 </body>
 
