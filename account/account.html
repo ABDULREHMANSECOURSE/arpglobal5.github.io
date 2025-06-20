@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ARP Account</title>
+  <title>ARP</title>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -98,7 +98,6 @@
         .then(result => {
           const user = result.user;
 
-          // Save profile to Firestore if not already
           db.collection("profiles").doc(user.uid).set({
             displayName: user.displayName,
             email: user.email,

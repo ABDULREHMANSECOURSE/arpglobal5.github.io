@@ -140,7 +140,7 @@
     <div class="profile-container" onmouseenter="keepProfileOpen(true)" onmouseleave="keepProfileOpen(false)">
       <img src="profileicon.png" alt="Profile" class="profile-icon" id="userProfileIcon" onmouseenter="showProfileOptions()" />
       <div class="profile-options" id="profileOptions">
-        <p><a href="account/account.html" style="color:white; text-decoration:none;">Account</a></p>
+        <p><a href="#" id="profileLink" style="color:white; text-decoration:none;">Profile</a></p>
         <p>Settings</p>
       </div>
     </div>
@@ -189,7 +189,6 @@
       }
     }
 
-    // Firebase Profile Photo Loader
     const firebaseConfig = {
       apiKey: "AIzaSyA3hm7EbyCEwbmBxCwOhpyQtFo9eC_YSmo",
       authDomain: "arp-login-system.firebaseapp.com",
@@ -204,12 +203,16 @@
     const db = firebase.firestore();
 
     auth.onAuthStateChanged(user => {
+      const profileLink = document.getElementById("profileLink");
       if (user) {
         db.collection("profiles").doc(user.uid).get().then(doc => {
           if (doc.exists && doc.data().photoURL) {
             document.getElementById("userProfileIcon").src = doc.data().photoURL;
           }
         });
+        profileLink.href = "account/profile.html";
+      } else {
+        profileLink.href = "account/account.html";
       }
     });
   </script>
