@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ARP Profile</title>
+  <link rel="icon" href="../arplogo.png" type="image/png" />
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -33,12 +34,19 @@
       border: 2px solid #00fff7;
     }
 
+    .info-line {
+      margin: 1rem 0;
+      padding: 0.5rem;
+      background: #1f1f1f;
+      border-radius: 8px;
+    }
+
     label {
       display: block;
       margin-top: 1.5rem;
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 0.6rem;
       border-radius: 8px;
@@ -63,6 +71,10 @@
       margin-top: 0.3rem;
       font-size: 0.9rem;
     }
+
+    #editForm {
+      display: none;
+    }
   </style>
 </head>
 
@@ -71,17 +83,37 @@
 
   <img id="userPhoto" class="profile-pic" src="" alt="Profile Photo" />
 
-  <label>Name:
-    <input type="text" id="displayName" readonly>
-  </label>
+  <div class="info-line">Name: <span id="infoName"></span></div>
+  <div class="info-line">Username: <span id="infoUsername"></span></div>
+  <div class="info-line">Country: <span id="infoCountry"></span></div>
 
-  <label>Username:
-    <input type="text" id="username">
-    <button onclick="checkUsername()">Verify</button>
-    <div id="usernameCheckMsg"></div>
-  </label>
+  <button onclick="toggleEditForm()">Edit Profile</button>
 
-  <button onclick="saveUsername()">Save Username</button>
+  <div id="editForm">
+    <label>Name:
+      <input type="text" id="displayName">
+    </label>
+
+    <label>Username:
+      <input type="text" id="username">
+      <button onclick="checkUsername()" type="button">Verify</button>
+      <div id="usernameCheckMsg"></div>
+    </label>
+
+    <label>Country:
+      <select id="country">
+        <option value="">Select Country</option>
+        <option value="Pakistan">Pakistan</option>
+        <option value="India">India</option>
+        <option value="USA">USA</option>
+        <option value="UK">UK</option>
+        <option value="Canada">Canada</option>
+        <option value="Australia">Australia</option>
+      </select>
+    </label>
+
+    <button onclick="saveProfile()">Save Profile</button>
+  </div>
 
   <script>
     const firebaseConfig = {
@@ -105,9 +137,14 @@
         const doc = await db.collection("profiles").doc(currentUID).get();
         if (doc.exists) {
           const data = doc.data();
-          document.getElementById("displayName").value = data.displayName || "";
           document.getElementById("userPhoto").src = data.photoURL || "profileicon.png";
+          document.getElementById("infoName").textContent = data.displayName || "";
+          document.getElementById("infoUsername").textContent = data.username || "";
+          document.getElementById("infoCountry").textContent = data.country || "";
+
+          document.getElementById("displayName").value = data.displayName || "";
           document.getElementById("username").value = data.username || "";
+          document.getElementById("country").value = data.country || "";
         }
       } else {
         alert("Please login first.");
@@ -115,36 +152,49 @@
       }
     });
 
+    function toggleEditForm() {
+      const form = document.getElementById("editForm");
+      form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+
     async function checkUsername() {
       const username = document.getElementById("username").value.trim().toLowerCase();
       if (username.length < 3) {
         document.getElementById("usernameCheckMsg").textContent = "Username must be at least 3 characters.";
         return;
       }
-
       const query = await db.collection("profiles").where("username", "==", username).get();
-      if (!query.empty) {
-        document.getElementById("usernameCheckMsg").innerHTML = `❌ Username not available. Try: <b>${username}_123</b>`;
+      if (!query.empty && query.docs[0].id !== currentUID) {
+        document.getElementById("usernameCheckMsg").innerHTML = `❌ Username not available.`;
       } else {
         document.getElementById("usernameCheckMsg").innerHTML = `✅ Username available!`;
       }
     }
 
-    async function saveUsername() {
+    async function saveProfile() {
       const username = document.getElementById("username").value.trim().toLowerCase();
-      if (!username || username.length < 3) {
-        alert("Please enter a valid username (min 3 characters).");
+      const displayName = document.getElementById("displayName").value.trim();
+      const country = document.getElementById("country").value;
+
+      if (username.length < 3 || !displayName) {
+        alert("Name and valid username required.");
         return;
       }
 
       const query = await db.collection("profiles").where("username", "==", username).get();
-      if (!query.empty) {
+      if (!query.empty && query.docs[0].id !== currentUID) {
         alert("Username already taken. Please choose another.");
         return;
       }
 
-      await db.collection("profiles").doc(currentUID).set({ username: username }, { merge: true });
-      alert("Username saved successfully!");
+      await db.collection("profiles").doc(currentUID).set({
+        username,
+        displayName,
+        country
+      }, { merge: true });
+
+      alert("Profile updated successfully!");
+      window.location.reload();
     }
   </script>
 </body>
